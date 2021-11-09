@@ -10,4 +10,4 @@
 起動時状態がわかるようLEDを点滅させるためm5stickの内蔵LEDのテスト
 
 ## setTimeEnvTest
-温度測定用プログラムにsetTime
+温度測定用プログラムにsetTimeおよびledTestの内容を組み込んだもの
