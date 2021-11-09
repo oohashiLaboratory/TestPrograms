@@ -21,11 +21,11 @@ const char* writeKey = "bcc550e6d9ce9eba"; // ライトキー
 //TIME_TO_SLEEP 600(10分)、1200（20分）,1800(30分)　3600（60分）
 
 void wifi_conect(void);
-void ambient_acosess(void);
+void ambient_access(void);
 void lcd_display(void);
 void get_time(void);
 void sleep_time_conf(void);
-void ambient_acosess(void);
+void ambient_access2(void);
 
 char now[20];
 int now_hour;
@@ -56,12 +56,12 @@ void loop()
   
   if(now_hour != old_hour)
   {
-    ambient_acosess2();
+    ambient_access2();
     WiFi.disconnect(); 
   }
   else
   {
-    ambient_acosess();
+    ambient_access();
     WiFi.disconnect();  
   }
   old_hour = now_hour;
@@ -127,7 +127,7 @@ void sleep_time_conf(void)
 
 }
 
-void ambient_acosess(void)
+void ambient_access(void)
 {
     //amibientにデータを送信する
     ambient.begin(channelId, writeKey, &client); // チャネルIDとライトキーを指定してAmbientの初期化
@@ -141,7 +141,7 @@ void ambient_acosess(void)
     ambient.send();
 }
 
-void ambient_acosess2(void)
+void ambient_access2(void)
 {
     //amibientにデータを送信する
     ambient.begin(channelId, writeKey, &client); // チャネルIDとライトキーを指定してAmbientの初期化
