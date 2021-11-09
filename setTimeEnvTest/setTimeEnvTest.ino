@@ -32,6 +32,7 @@ void ambient_access(void);
 void lcd_display(void);
 void get_time(void);
 void sleep_time_conf(void);
+void led_blink(void)
 
 //温度測定用変数
 float temp = 0.0;                                 //温度変数
@@ -56,10 +57,12 @@ void setup()
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setTextColor(YELLOW);                    //LCDテキストの色を黄色に変更
     Wire.begin();                                   //I2Cを初期化する
+    pinMode(GPIO_NUM_10, OUTPUT);
 }
 
 void loop() 
 {
+  led_blink();
   if(sht30.get() == 0)
   {
     temp = sht30.cTemp;               //温度取り込み
@@ -165,4 +168,11 @@ void ambient_access()
     
     ambient.send();                   //ambientにデータを送信
     
+}
+
+void led_blink()
+{
+  digitalWrite(GPIO_NUM_10, LOW);
+  delay(500);
+  digitalWrite(GPIO_NUM_10, HIGH);
 }
