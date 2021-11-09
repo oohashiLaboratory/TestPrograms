@@ -17,7 +17,7 @@ unsigned int channelId = 38698; // Ambient
 const char* writeKey = "bcc550e6d9ce9eba"; // ライトキー
 
 #define uS_TO_S_FACTOR 1000000  // マイクロ秒から秒への変換係数Conversion factor for micro seconds to seconds
-#define SLEEP_CONST  60       // ESP32がスリープ状態になる時間（秒単位） Time ESP32 will go to sleep (in seconds) */
+#define SLEEP_CONST  600       // ESP32がスリープ状態になる時間（秒単位） Time ESP32 will go to sleep (in seconds) */
 //TIME_TO_SLEEP 600(10分)、1200（20分）,1800(30分)　3600（60分）
 
 void wifi_conect(void);
@@ -28,12 +28,15 @@ void sleep_time_conf(void);
 void ambient_acosess(void);
 
 char now[20];
-char now_hour;
-char now_min;
-char now_sec;
-RTC_DATA_ATTR char old_hour = 0;
+int now_hour;
+int now_min;
+int now_sec;
+RTC_DATA_ATTR int old_hour = 0;
 
-char sleep_time;
+int sleep_time;
+
+  int min_to_sec;
+  int sec;
 
 void setup() 
 {
@@ -48,11 +51,18 @@ void loop()
 {
   wifi_conect();
   get_time();
-  WiFi.disconnect();  
+  sleep_time_conf();
   lcd_display();
+  
   if(now_hour != old_hour)
   {
+    ambient_acosess2();
+    WiFi.disconnect(); 
+  }
+  else
+  {
     ambient_acosess();
+    WiFi.disconnect();  
   }
   old_hour = now_hour;
   esp_deep_sleep(sleep_time * uS_TO_S_FACTOR);
@@ -85,7 +95,7 @@ void get_time(void)
       timeInfo.tm_sec
     );
     
-    now_hour = timeInfo.tm_mday;
+    now_hour = timeInfo.tm_hour;
     now_min  = timeInfo.tm_min;
     now_sec  = timeInfo.tm_sec;
 }
@@ -95,22 +105,26 @@ void lcd_display(void)
    //データをLCDに表示
    M5.Lcd.setTextSize(1);                        //テキストサイズを２に変更
    M5.Lcd.setTextColor(YELLOW,BLACK);            //テキストの色を黄色に変更
-   M5.Lcd.setCursor(20, 20);
+   M5.Lcd.setCursor(20, 0);
    M5.Lcd.println(now_min);
-   M5.Lcd.setCursor(20, 40);
-   M5.Lcd.println(old_hour);
-   M5.Lcd.setCursor(10, 60);
+   M5.Lcd.setCursor(20, 15);
+   M5.Lcd.println(min_to_sec);   
+   M5.Lcd.setCursor(20, 30);
+   M5.Lcd.println(sec);
+   M5.Lcd.setCursor(20, 50);
+   M5.Lcd.println(sleep_time); 
+   M5.Lcd.setCursor(10, 65);
    M5.Lcd.println(now);
+   
 }
 
 void sleep_time_conf(void)
 {
-//  char min_to_sec;
-//  char sec;
-//  min_to_sec = now_min%10;
-//  sec = now_sec + min_to_sec;
-//  sleep_time = SLEEP_CONST - sec;
-  sleep_time = SLEEP_CONST - now_sec;
+
+  min_to_sec = (now_min%10)*60;
+  sec = now_sec + min_to_sec;
+  sleep_time = SLEEP_CONST - sec;
+
 }
 
 void ambient_acosess(void)
@@ -119,9 +133,24 @@ void ambient_acosess(void)
     ambient.begin(channelId, writeKey, &client); // チャネルIDとライトキーを指定してAmbientの初期化
 
     // 積算温度、平均気温の値をAmbientに送信する 
-    ambient.set(1,now_min);
+    ambient.set(1,now_hour);
     ambient.set(2,old_hour);
     ambient.set(3,5);
- 
+    ambient.set(4,sleep_time);
+     
+    ambient.send();
+}
+
+void ambient_acosess2(void)
+{
+    //amibientにデータを送信する
+    ambient.begin(channelId, writeKey, &client); // チャネルIDとライトキーを指定してAmbientの初期化
+
+    // 積算温度、平均気温の値をAmbientに送信する 
+    ambient.set(1,now_hour);
+    ambient.set(2,old_hour);
+    ambient.set(3,10);
+    ambient.set(4,sleep_time);
+
     ambient.send();
 }
