@@ -11,7 +11,7 @@ SHT3X sht30;        //M5Stack用環境センサユニット ver.2
 #include <WiFi.h>
 #include "time.h"
 
-//Ambientに送信する
+//Ambient
 #include "Ambient.h"
 
 const char* ssid     = "tst.lsb";//WIFI名
@@ -20,15 +20,15 @@ const char* password = "oohashilab@00";//wifiパスワード
 WiFiClient client;
 Ambient ambient;
 
-unsigned int channelId = 38698; // AmbientチャネルＩＤ
-const char* writeKey = "bcc550e6d9ce9eba"; // Ambientライトキー
+unsigned int channelId = 38699; // AmbientチャネルＩＤ
+const char* writeKey = "40b82c743231a631"; // Ambientライトキー
 
 #define uS_TO_S_FACTOR 1000000  // マイクロ秒から秒への変換係数Conversion factor for micro seconds to seconds
 #define SLEEP_CONST  600       // スリープ時間の基準値
 
 //関数プロトタイプ宣言
 void wifi_conect(void);
-void ambient_acosess(void);
+void ambient_access(void);
 void lcd_display(void);
 void get_time(void);
 void sleep_time_conf(void);
@@ -81,7 +81,7 @@ void loop()
   
   if(now_hour != old_hour)
   {
-    ambient_acosess();
+    ambient_access();
     WiFi.disconnect();
     hAveTemp = 0;      //1時間平均気温リセット 
   }
