@@ -8,3 +8,6 @@
 
 ## ledTest
 起動時状態がわかるようLEDを点滅させるためm5stickの内蔵LEDのテスト
+
+## setTimeEnvTest
+温度測定用プログラムにsetTime
