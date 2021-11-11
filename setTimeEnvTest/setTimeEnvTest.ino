@@ -45,16 +45,16 @@ int now_hour;
 int now_min;
 int now_sec;
 RTC_DATA_ATTR int old_hour = 0;
-int sleep_time;
-int min_to_sec;
-int sec;
+int sleepTime;//deeepsleep時間
+int elapsed_min;//経過分数
+int elapsed_time;//経過時間
 
 void setup() 
 {
     M5.begin(); 
     M5.Axp.ScreenBreath(10);                        //画面の輝度を少し下げる
     M5.Lcd.setRotation(3);                          //画面を("x*90°")回転させる
-    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.fillScreen(BLACK);                       //画面を黒で塗りつぶす
     M5.Lcd.setTextColor(YELLOW);                    //LCDテキストの色を黄色に変更
     Wire.begin();                                   //I2Cを初期化する
     pinMode(GPIO_NUM_10, OUTPUT);
@@ -136,14 +136,14 @@ void lcd_display(void)
    //データをLCDに表示
    M5.Lcd.setTextSize(1);                        //テキストサイズを２に変更
    M5.Lcd.setTextColor(YELLOW,BLACK);            //テキストの色を黄色に変更
-   M5.Lcd.setCursor(20, 0);
+   M5.Lcd.setCursor(20, 5);
    M5.Lcd.println(now_min);//現在分を表示
-   M5.Lcd.setCursor(20, 15);
-   M5.Lcd.println(min_to_sec);//現在分を10で割った余りを秒に直したものを表示
-   M5.Lcd.setCursor(20, 30);
-   M5.Lcd.println(sec);//現在秒とmin_to_secを足したもの
+   M5.Lcd.setCursor(20, 20);
+   M5.Lcd.println(elapsed_min);//現在分を10で割った余りを秒に直したものを表示
+   M5.Lcd.setCursor(20, 35);
+   M5.Lcd.println(elapsed_time);//現在秒とelapsed_minを足したもの
    M5.Lcd.setCursor(20, 50);
-   M5.Lcd.println(sleep_time);//600からsecを引いたあまり
+   M5.Lcd.println(sleep_time);//600からelapsed_timeを引いたあまり
    M5.Lcd.setCursor(10, 65);
    M5.Lcd.println(now);//現在時刻を表示
 }
@@ -151,9 +151,9 @@ void lcd_display(void)
 //スリープ時間決定関数
 void sleep_time_conf(void)
 {
-  min_to_sec = (now_min%10)*60;
-  sec = now_sec + min_to_sec;
-  sleep_time = SLEEP_CONST - sec;
+  elapsed_min = (now_min%10)*60; //経過分＝現在分数÷10の剰余×60
+  elapsed_time = now_sec + elapsed_min;//経過時間=現在秒数+経過分数
+  sleep_time = SLEEP_CONST - elapsed_time;//スリープ時間＝睡眠定数-経過時間
 }
 
 //アンビエントアクセス関数
