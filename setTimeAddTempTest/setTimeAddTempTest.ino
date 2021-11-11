@@ -37,6 +37,10 @@ void led_blink(void);
 //温度測定用変数
 float temp = 0.0;                                 //温度変数
 RTC_DATA_ATTR float hAveTemp = 0;                //1時間平均気温変数
+RTC_DATA_ATTR float aveTemp = 0.0;        //平均温度変数
+RTC_DATA_ATTR float addTemp = 0.0;        //積算温度変数
+RTC_DATA_ATTR float addTemp10 = 0.0;        //1時間平均積算温度変数
+RTC_DATA_ATTR float aveTemp10 = 0.0;        //積算温度変数
 float hum = 0.0;                                  //湿度変数
 
 //時間管理用変数
@@ -45,6 +49,7 @@ int now_hour;
 int now_min;
 int now_sec;
 RTC_DATA_ATTR int old_hour = 0;
+RTC_DATA_ATTR char day = 0;               //日付管理変数
 int sleepTime;//deeepsleep時間
 int elapsed_min;//経過分数
 int elapsed_time;//経過時間
@@ -81,17 +86,43 @@ void loop()
   get_time();
   sleep_time_conf();
   lcd_display();
-  
+
   if(now_hour != old_hour)
   {
-    ambient_access();
-    WiFi.disconnect();
+    if(aveTemp == 0)
+    {
+      aveTemp = temp;
+    }
+    else
+    {
+      aveTemp = (temp + aveTemp)/2
+    }
+
+    if(aveTemp == 0)
+    {
+      aveTemp10 = hAveTemp;
+    }
+    else
+    {
+      aveTemp10 = (hAveTemp + aveTemp10)/2
+    }
+    //日付が変わった時の処理
+    if(day != now_day)
+    {
+      ambient_access();
+      WiFi.disconnect();
+      addTemp = addTemp+aveTemp;
+    }
+    else
+    {
+      WiFi.disconnect();
+    }
     hAveTemp = 0;      //1時間平均気温リセット 
   }
-  else
-  {
-    WiFi.disconnect();  
-  }
+
+  
+
+  day = now_day;
   old_hour = now_hour;
   esp_deep_sleep(sleep_time * uS_TO_S_FACTOR);
 }
@@ -162,9 +193,10 @@ void ambient_access()
     ambient.begin(channelId, writeKey, &client); //チャネルIDとライトキーを指定してAmbientの初期化
 
     //Ambientに送信するデータをセット 
-    ambient.set(1, temp);
-    ambient.set(2, hum);
-    ambient.set(3, hAveTemp);
+    ambient.set(1, aveTemp);
+    ambient.set(2, addTemp);
+    ambient.set(3,aveTemp10);
+    ambient.set(4,addTemp10);
     
     ambient.send();                   //ambientにデータを送信
     
