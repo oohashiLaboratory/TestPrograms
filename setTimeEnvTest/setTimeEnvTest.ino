@@ -32,7 +32,7 @@ void ambient_access(void);
 void lcd_display(void);
 void get_time(void);
 void sleep_time_conf(void);
-void led_blink(void)
+void led_blink(void);
 
 //温度測定用変数
 float temp = 0.0;                                 //温度変数
