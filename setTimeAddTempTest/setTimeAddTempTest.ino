@@ -95,7 +95,7 @@ void loop()
     }
     else
     {
-      aveTemp = (temp + aveTemp)/2
+      aveTemp = (temp + aveTemp)/2;
     }
 
     if(aveTemp == 0)
@@ -104,7 +104,7 @@ void loop()
     }
     else
     {
-      aveTemp10 = (hAveTemp + aveTemp10)/2
+      aveTemp10 = (hAveTemp + aveTemp10)/2;
     }
     //日付が変わった時の処理
     if(day != now_day)
