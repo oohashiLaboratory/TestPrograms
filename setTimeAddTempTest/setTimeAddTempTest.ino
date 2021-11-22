@@ -14,14 +14,14 @@ SHT3X sht30;        //M5Stack用環境センサユニット ver.2
 //Ambient
 #include "Ambient.h"
 
-const char* ssid     = "tst.lsb";//WIFI名
-const char* password = "oohashilab@00";//wifiパスワード
+const char* ssid     = "HUAWEI-F4E1";//WIFI名
+const char* password = "64141340";//wifiパスワード
 
 WiFiClient client;
 Ambient ambient;
 
-unsigned int channelId = 38699; // AmbientチャネルＩＤ
-const char* writeKey = "40b82c743231a631"; // Ambientライトキー
+unsigned int channelId = ; // AmbientチャネルＩＤ
+const char* writeKey = ""; // Ambientライトキー
 
 #define uS_TO_S_FACTOR 1000000  // マイクロ秒から秒への変換係数Conversion factor for micro seconds to seconds
 #define SLEEP_CONST  600       // スリープ時間の基準値
@@ -45,12 +45,13 @@ float hum = 0.0;                                  //湿度変数
 
 //時間管理用変数
 char now[20];
+char now_day;
 int now_hour;
 int now_min;
 int now_sec;
 RTC_DATA_ATTR int old_hour = 0;
 RTC_DATA_ATTR char day = 0;               //日付管理変数
-int sleepTime;//deeepsleep時間
+int sleep_time;//deeepsleep時間
 int elapsed_min;//経過分数
 int elapsed_time;//経過時間
 
@@ -85,7 +86,7 @@ void loop()
   wifi_conect();
   get_time();
   sleep_time_conf();
-  lcd_display();
+  //lcd_display();
 
   if(now_hour != old_hour)
   {
@@ -155,7 +156,7 @@ void get_time(void)
       timeInfo.tm_min,
       timeInfo.tm_sec
     );
-    
+    now_day = timeInfo.tm_mday;
     now_hour = timeInfo.tm_hour;
     now_min  = timeInfo.tm_min;
     now_sec  = timeInfo.tm_sec;
