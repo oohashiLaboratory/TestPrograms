@@ -16,7 +16,6 @@ void setup()
   M5.Lcd.fillScreen(BLACK);
   M5.Lcd.setTextColor(YELLOW);                    //LCDテキストの色を黄色に変更
   pinMode(GPIO_NUM_10, OUTPUT);
-  
 }
 
 void loop() 
