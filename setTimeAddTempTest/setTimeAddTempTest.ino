@@ -99,7 +99,7 @@ void loop()
       aveTemp = (temp + aveTemp)/2;
     }
 
-    if(aveTemp == 0)
+    if(aveTemp10 == 0)
     {
       aveTemp10 = hAveTemp;
     }
@@ -108,21 +108,21 @@ void loop()
       aveTemp10 = (hAveTemp + aveTemp10)/2;
     }
     //日付が変わった時の処理
-    if(day != now_day)
-    {
-      ambient_access();
-      WiFi.disconnect();
-      addTemp = addTemp+aveTemp;
-    }
-    else
-    {
-      WiFi.disconnect();
-    }
     hAveTemp = 0;      //1時間平均気温リセット 
   }
-
   
-
+  if(day != now_day)
+  {
+    ambient_access();
+    WiFi.disconnect();
+    addTemp = addTemp+aveTemp;
+    aveTemp = 0;
+    aveTemp10 = 0;
+  }
+  else
+  {
+    WiFi.disconnect();
+  }
   day = now_day;
   old_hour = now_hour;
   esp_deep_sleep(sleep_time * uS_TO_S_FACTOR);
