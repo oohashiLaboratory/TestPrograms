@@ -12,9 +12,9 @@
 ## setTimeEnvTest
 温度測定用プログラムにsetTimeおよびledTestの内容を組み込んだもの
 
-##GravityMoisture
+## GravityMoisture
 グラビティの土壌水分センサでデータ取得を確認するためのプログラム
 
-##GroveCapacitiveMoisture 
+## GroveCapacitiveMoisture 
 
 Gloveの防腐性の土壌水分センサでデータ取得を確認するためのプログラム
